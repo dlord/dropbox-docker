@@ -14,7 +14,8 @@ RUN gpg --keyserver pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4
 ENV DROPBOX_HOME=/opt/dropbox
 
 RUN groupadd -g 1000 dropbox && \
-    useradd -g dropbox -u 1000 -m -d $DROPBOX_HOME dropbox && \
+    useradd -g dropbox -u 1000 -r -M dropbox && \
+    mkdir -p $DROPBOX_HOME && \
     wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf - -C $DROPBOX_HOME && \
     chown -R dropbox:dropbox $DROPBOX_HOME
 

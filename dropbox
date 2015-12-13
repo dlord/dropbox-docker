@@ -5,9 +5,8 @@ DROPBOX_UID=${DROPBOX_UID:-1000}
 DROPBOX_GID=${DROPBOX_GID:-1000}
 
 setup_dropbox_home() {
-    mkdir -p $DROPBOX_DATA/.dropbox $DROPBOX_DATA/Dropbox && \
-    ln -sf $DROPBOX_DATA/.dropbox $DROPBOX_HOME/.dropbox && \
-    ln -sf $DROPBOX_DATA/Dropbox $DROPBOX_HOME/Dropbox
+    mkdir -p $DROPBOX_DATA
+    ln -sf $DROPBOX_HOME/.dropbox-dist $DROPBOX_DATA/.dropbox-dist
 }
 
 update_permissions() {
@@ -18,8 +17,8 @@ update_permissions() {
 
 run_dropbox() {
     pushd /opt/dropbox > /dev/null
-    HOME=$DROPBOX_HOME
-    exec gosu dropbox $DROPBOX_HOME/.dropbox-dist/dropboxd
+    HOME=$DROPBOX_DATA
+    exec gosu dropbox $DROPBOX_DATA/.dropbox-dist/dropboxd
 }
 
 case "$1" in
