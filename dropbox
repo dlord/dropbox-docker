@@ -1,0 +1,37 @@
+#!/bin/bash
+
+DROPBOX_DATA=${DROPBOX_DATA:-"/var/lib/dropbox"}
+DROPBOX_UID=${DROPBOX_UID:-1000}
+DROPBOX_GID=${DROPBOX_GID:-1000}
+
+setup_dropbox_home() {
+    mkdir -p $DROPBOX_DATA/.dropbox $DROPBOX_DATA/Dropbox && \
+    ln -sf $DROPBOX_DATA/.dropbox $DROPBOX_HOME/.dropbox && \
+    ln -sf $DROPBOX_DATA/Dropbox $DROPBOX_HOME/Dropbox
+}
+
+update_permissions() {
+    groupmod -g $DROPBOX_GID dropbox
+    usermod -u $DROPBOX_UID dropbox
+    chown -R dropbox:dropbox $DROPBOX_HOME $DROPBOX_DATA
+}
+
+run_dropbox() {
+    pushd /opt/dropbox > /dev/null
+    HOME=$DROPBOX_HOME
+    exec gosu dropbox $DROPBOX_HOME/.dropbox-dist/dropboxd
+}
+
+case "$1" in
+    run)
+        setup_dropbox_home
+        update_permissions
+        run_dropbox $@
+        ;;
+    permissions)
+        shift 1
+        update_permissions
+        ;;
+    *)
+        exec "$@"
+esac
