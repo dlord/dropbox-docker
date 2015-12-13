@@ -18,7 +18,7 @@ RUN groupadd -g 1000 dropbox && \
     wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf - -C $DROPBOX_HOME && \
     chown -R dropbox:dropbox $DROPBOX_HOME
 
-COPY dropbox /usr/local/bin
+COPY dropbox /usr/local/bin/
 
 ENTRYPOINT ["dropbox"]
 CMD ["run"]
